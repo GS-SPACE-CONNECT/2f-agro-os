@@ -11,6 +11,9 @@ Documento técnico justificando estratégias de OS para a estação meteo autôn
 ## 👥 Owner
 [@lucksza](https://github.com/lucksza) · Team [`ml-os`](https://github.com/orgs/GS-SPACE-CONNECT/teams/ml-os)
 
+## 📄 Documento técnico
+> **[docs/documento-tecnico.md](docs/documento-tecnico.md)** · [PDF para entrega](docs/documento-tecnico.pdf)
+
 ## 📦 Entregáveis (10 pts)
 | Item | Pts |
 |---|---|

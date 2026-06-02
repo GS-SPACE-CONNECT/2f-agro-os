@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistemas Operacionais em Ambientes Extremos — 2F-AGRO</title>
+<style>
+  :root { --rosa:#ED1A6F; --tinta:#1a1a1a; --suave:#555; --linha:#e3e3e3; --fundo:#fafafa; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--tinta); line-height: 1.65; max-width: 880px; margin: 0 auto;
+    padding: 48px 32px; background: #fff;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  h1 { font-size: 1.9rem; line-height: 1.25; border-bottom: 3px solid var(--rosa); padding-bottom: 14px; margin-bottom: 8px; }
+  h2 { font-size: 1.4rem; margin-top: 2.4em; color: var(--rosa); border-bottom: 1px solid var(--linha); padding-bottom: 6px; }
+  h3 { font-size: 1.12rem; margin-top: 1.8em; }
+  h4 { font-size: 1rem; margin-top: 1.4em; color: var(--suave); }
+  p, li { font-size: 0.98rem; }
+  table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 0.9rem; }
+  th, td { border: 1px solid var(--linha); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: #fdeef4; color: var(--rosa); font-weight: 600; }
+  tr:nth-child(even) td { background: var(--fundo); }
+  code { background: #f0f0f3; padding: 1px 6px; border-radius: 4px; font-size: 0.85em; font-family: "Cascadia Code", Consolas, monospace; }
+  pre { background: #f4f4f7; color: #1a1a1a; border: 1px solid #dcdce2; padding: 12px 14px; border-radius: 8px; font-size: 0.76rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: break-word; page-break-inside: avoid; }
+  pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+  pre .cmt { color: #6a7a8a; }
+  blockquote { border-left: 4px solid var(--rosa); margin: 18px 0; padding: 4px 18px; background: var(--fundo); color: var(--suave); border-radius: 0 6px 6px 0; }
+  .meta { color: var(--suave); font-size: 0.95rem; margin: 4px 0; }
+  .meta strong { color: var(--tinta); }
+  .cabecalho { margin-bottom: 30px; }
+  hr { border: none; border-top: 1px solid var(--linha); margin: 36px 0; }
+  ul, ol { padding-left: 24px; }
+  li { margin: 5px 0; }
+  .config { background: #fff7fb; border: 1px solid #f6d4e4; border-left: 4px solid var(--rosa); border-radius: 0 8px 8px 0; padding: 12px 18px; margin: 16px 0; }
+  .config .titulo { font-weight: 600; color: var(--rosa); display: block; margin-bottom: 8px; }
+  .config ul { margin: 0; }
+  .config code { background: #fce7f0; }
+  @media print {
+    body { padding: 0; max-width: none; }
+    h2 { page-break-after: avoid; }
+    table, blockquote, pre, .config { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Sistemas Operacionais em Ambientes Extremos<br>A Fronteira Espacial</h1>
+<div class="cabecalho">
+  <p class="meta"><strong>Disciplina:</strong> Operating Systems &nbsp;•&nbsp; <strong>Professor:</strong> Prof. Ricardo Black</p>
+  <p class="meta"><strong>Curso:</strong> 3º Ano de Engenharia de Software — FIAP</p>
+  <p class="meta"><strong>Projeto:</strong> 2F-AGRO — Estação meteorológica solar autônoma (<em>edge</em>) para o pequeno agricultor</p>
+  <p class="meta"><strong>ODS alvo:</strong> ODS 9 — Indústria, Inovação e Infraestrutura</p>
+  <p class="meta" style="margin-top:14px;"><strong>Integrantes:</strong></p>
+  <table style="max-width:420px;">
+    <thead><tr><th>Nome</th><th>RM</th></tr></thead>
+    <tbody>
+      <tr><td>Lucca Borges</td><td>554608</td></tr>
+      <tr><td>Ruan Melo</td><td>557599</td></tr>
+      <tr><td>Rodrigo Jimenez</td><td>558148</td></tr>
+      <tr><td>João Victor Franco</td><td>556790</td></tr>
+      <tr><td>Bruno Leão</td><td>555563</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Sumário Executivo</h2>
+<p>Este documento propõe e justifica um conjunto de estratégias de <strong>Operating Systems (OS Tuning)</strong> para a <strong>estação meteorológica solar autônoma do projeto 2F-AGRO</strong>, instalada em fazendas do <strong>semiárido do Nordeste</strong>, sem rede elétrica nem internet confiáveis. O nó é, na prática, um <strong>dispositivo de borda (<em>edge computing</em>) projetado com a mesma filosofia de engenharia das sondas e satélites espaciais</strong>: deve sobreviver por anos sem manutenção, sem reinício físico imediato, com energia e armazenamento limitados e com confiabilidade primordial.</p>
+<p>Aplicamos diretamente o aprendizado da exploração espacial — onde otimizar o sistema operacional é questão de sobrevivência da missão — a um problema concreto da Terra. Apresentamos a arquitetura de hardware, justificamos a escolha de <strong>Raspbian Lite com kernel PREEMPT-RT</strong>, detalhamos três estratégias de <em>tuning</em> (<strong>Memória, CPU e I/O</strong>) com comandos reais, e fechamos com a conexão ao <strong>ODS 9</strong> e seu impacto quantitativo no campo.</p>
+
+<hr>
+
+<h2>1. Definição do Cenário e Arquitetura</h2>
+
+<h3>1.1 Cenário de aplicação</h3>
+<p><strong>Estação meteorológica solar autônoma (2F-AGRO)</strong> instalada em propriedades rurais do semiárido. O dispositivo coleta dados ambientais (temperatura, umidade do ar e do solo, pressão, vento, chuva), executa <strong>processamento na borda</strong> — calcula índices agrometeorológicos, detecta eventos críticos (risco de geada, estresse hídrico, janela de pulverização) — e transmite <strong>apenas o resultado útil</strong> por LoRaWAN, com <em>fallback</em> GSM/4G. O objetivo é operar <strong>24/7 por anos, sem energia da rede e sem alguém para reiniciá-la</strong>.</p>
+<p>Esse é exatamente o desafio de um sistema espacial trazido para a Terra: <strong>autonomia, eficiência energética radical e tolerância a falhas</strong>. A largura de banda (LoRa) e a energia (painel solar) são os recursos mais escassos — por isso processar na borda e otimizar o SO não é luxo, é requisito de sobrevivência do nó.</p>
+
+<h3>1.2 Arquitetura de hardware</h3>
+<table>
+  <thead><tr><th>Componente</th><th>Especificação</th><th>Justificativa</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Compute</strong></td><td>Raspberry Pi 4 (BCM2711, quad-core Cortex-A72 @ 1.5 GHz, 4 GB RAM) + eMMC 32 GB</td><td>SoC ARM de baixo consumo, 4 núcleos para isolar tarefas críticas, amplo suporte a Linux e drivers.</td></tr>
+    <tr><td><strong>Sensores</strong></td><td>DHT22 (temp/umidade), BME280 (pressão/umidade), anemômetro, pluviômetro, sensor de umidade de solo</td><td>Cobrem as variáveis agrometeorológicas; interfaces I²C/1-Wire/GPIO nativas do Pi.</td></tr>
+    <tr><td><strong>Energia</strong></td><td>Painel solar 20 W + bateria LiFePO4 12,8 V / 10 Ah + controlador MPPT</td><td>LiFePO4 tolera o calor do semiárido e tem milhares de ciclos; MPPT maximiza a colheita solar.</td></tr>
+    <tr><td><strong>Armazenamento</strong></td><td>eMMC 32 GB (NAND)</td><td><em>Flash</em> tem ciclos de escrita finitos → exige tuning de I/O para não “queimar”.</td></tr>
+    <tr><td><strong>Rede</strong></td><td>LoRaWAN (primário) + GSM/4G (<em>fallback</em>)</td><td>Conectividade em área sem cobertura confiável; LoRa transmite poucos bytes a quilômetros.</td></tr>
+    <tr><td><strong>Resiliência de energia</strong></td><td>Monitor de tensão (GPIO <em>power-good</em>) + <em>supercapacitor</em></td><td>Desligamento limpo em queda de energia, garantindo integridade dos dados.</td></tr>
+  </tbody>
+</table>
+
+<h3>1.3 Justificativa do Sistema Operacional base</h3>
+<p><strong>Escolha: Raspbian Lite (Debian <em>headless</em>) com kernel <em>patcheado</em> com PREEMPT-RT.</strong></p>
+<h4>Por que Linux (Raspbian) e não um RTOS puro?</h4>
+<ol>
+  <li><strong>Carga de trabalho mista e rica em I/O.</strong> A estação precisa de pilha <strong>LoRaWAN</strong>, modem <strong>GSM/4G</strong>, drivers de sensores (<strong>I²C, 1-Wire, GPIO</strong>), sistema de arquivos robusto (<strong>F2FS</strong>), <code>cgroups</code> e bibliotecas de processamento — impraticável num RTOS minimalista.</li>
+  <li><strong>Tuning profundo disponível.</strong> O Linux expõe exatamente os mecanismos do projeto: <code>swappiness</code>, <strong>cgroups v2</strong>, <code>earlyoom</code>, <code>min_free_kbytes</code>, <code>SCHED_FIFO</code>, <code>taskset</code>, <strong>F2FS</strong>, <em>write barriers</em> e <code>logrotate</code>.</li>
+  <li><strong>Determinismo onde importa, via PREEMPT-RT.</strong> O <em>patch</em> torna o kernel majoritariamente preemptível, reduzindo a latência de interrupção a faixas previsíveis — suficiente para o tempo real <em>soft</em> da telemetria e da janela de transmissão LoRa.</li>
+  <li><strong>Raspbian Lite = mínimo e auditável.</strong> Versão <em>headless</em>, poucos serviços ativos, <em>boot</em> rápido, menor superfície de ataque e menor consumo de RAM/energia.</li>
+</ol>
+<blockquote><strong>Conexão espacial:</strong> é a mesma decisão de arquitetura de rovers e satélites modernos — <strong>Linux endurecido para a maior parte das tarefas, com camadas de tempo real para o que é crítico</strong>. Trazemos esse padrão de engenharia espacial para um Raspberry Pi numa fazenda.</blockquote>
+
+<hr>
+
+<h2>2. Estratégias de Tuning de Kernel e Gerenciamento de Recursos</h2>
+<blockquote>Princípio orientador: <strong>a estação fica num poste no meio da roça — não há “desligar e ligar de novo” imediato.</strong> Cada estratégia prioriza <strong>prevenção de falhas, previsibilidade e proteção do hardware</strong> sobre desempenho de pico, como num sistema espacial.</blockquote>
+
+<h3>2.1 Gerenciamento de Memória — evitar o OOM sem reinício físico</h3>
+<p><strong>Problema:</strong> mesmo com 4 GB, picos de processamento (lote de leituras, compressão, inferência) podem esgotar a RAM. Um <em>Out of Memory</em> descontrolado aciona o OOM Killer, que pode matar a <strong>telemetria</strong> — e a estação fica muda no campo, sem ninguém para reiniciá-la.</p>
+<div class="config">
+  <span class="titulo">Estratégias e comandos</span>
+  <ul>
+    <li><strong>swappiness baixo:</strong> <code>sysctl -w vm.swappiness=10</code> (persistente em <code>/etc/sysctl.d/99-agro.conf</code>) — evita <em>swap</em> agressivo para a eMMC, mantendo páginas ativas na RAM.</li>
+    <li><strong>Isolamento por cgroups v2</strong> — conter o que pode estourar:
+<pre><code>echo "+memory" &gt; /sys/fs/cgroup/cgroup.subtree_control
+mkdir /sys/fs/cgroup/proc          <span class="cmt"># grupo das tarefas pesadas</span>
+echo 1G  &gt; /sys/fs/cgroup/proc/memory.max    <span class="cmt"># teto rígido (OOM local)</span>
+echo 768M &gt; /sys/fs/cgroup/proc/memory.high  <span class="cmt"># throttle antes do teto</span>
+echo $PID &gt; /sys/fs/cgroup/proc/cgroup.procs <span class="cmt"># move o processo</span></code></pre>
+      Se o processamento estourar, <strong>apenas ele</strong> é contido; a telemetria (com <code>memory.min</code> reservado) nunca é pressionada.</li>
+    <li><strong>earlyoom</strong> — matar o sacrificável antes do <em>lockup</em>: <code>earlyoom -m 8 -s 100</code> (age com 8% de RAM livre), com <code>--prefer</code> nas tarefas secundárias e <code>--avoid</code> protegendo a telemetria.</li>
+    <li><strong>min_free_kbytes</strong> — reserva contra rajadas: <code>sysctl -w vm.min_free_kbytes=65536</code> dá folga para alocações de rajada sem disparar OOM.</li>
+    <li><strong>oom_score_adj</strong> — escolher a vítima certa: <code>echo -1000 &gt; /proc/$(pidof telemetria)/oom_score_adj</code> (imune); descartáveis recebem <code>echo 500 &gt; ...</code>.</li>
+  </ul>
+</div>
+
+<h3>2.2 Escalonamento de Processos (CPU) — prioridade absoluta para a telemetria</h3>
+<p><strong>Problema:</strong> a leitura/transmissão de telemetria não pode atrasar porque uma compressão ou cálculo pesado monopolizou a CPU. É preciso <strong>prioridade absoluta e previsível</strong>.</p>
+<div class="config">
+  <span class="titulo">Estratégias e comandos</span>
+  <ul>
+    <li><strong>SCHED_FIFO de alta prioridade:</strong> <code>chrt -f 99 ./telemetria</code> (ou <code>chrt -f -p 99 &lt;PID&gt;</code>) — preempta <strong>sempre</strong> as tarefas comuns; a coleta/compressão secundária só roda quando não há trabalho crítico.</li>
+    <li><strong>Fixar a um núcleo dedicado:</strong> <code>taskset -c 0 ./telemetria</code> confina a telemetria ao núcleo 0 (tarefas pesadas nos núcleos 1–3); opcionalmente isolar no <em>boot</em> em <code>cmdline.txt</code>: <code>isolcpus=0 nohz_full=0</code>.</li>
+    <li><strong>Rebaixar o secundário:</strong> <code>nice -n 10 ./processa_historico</code> (ou <code>renice +10 -p &lt;PID&gt;</code>) — cede CPU instantaneamente quando a telemetria precisa.</li>
+    <li><strong>Reserva de banda RT + DVFS (energia solar):</strong> <code>sysctl -w kernel.sched_rt_runtime_us=950000</code> garante ~5% de CPU às tarefas comuns sob carga RT máxima; <em>governor</em> conforme o sol: <code>cpupower frequency-set -g ondemand</code> de dia e <code>-g powersave</code> à noite/bateria baixa.</li>
+  </ul>
+</div>
+
+<h3>2.3 I/O e Armazenamento — desgaste mínimo e integridade na falta de energia</h3>
+<p><strong>Problema:</strong> a eMMC (NAND) tem ciclos de escrita finitos; gravar a cada leitura de sensor a “queima” em meses. E uma queda de energia não pode corromper os dados nem o sistema.</p>
+<div class="config">
+  <span class="titulo">Estratégias e comandos</span>
+  <ul>
+    <li><strong>F2FS — feito para flash:</strong> <code>mkfs.f2fs -l DADOS /dev/mmcblk0p2</code>; em <code>/etc/fstab</code>: <code>/dev/mmcblk0p2  /dados  f2fs  noatime,nodiratime,fsync_mode=strict  0 2</code> (<em>wear leveling</em>, escrita sequencial e integridade mais forte).</li>
+    <li><strong>Ring buffer em tmpfs</strong> — agrupar escritas, poupar a NAND: leituras entram num buffer circular em RAM e são gravadas <strong>em lote</strong> (ex.: a cada N min), transformando milhares de micro-escritas em poucas escritas grandes.
+<pre><code># /etc/fstab — buffer volátil de 64 MB em RAM
+tmpfs  /run/sensors  tmpfs  size=64M,noatime,mode=0755  0 0</code></pre></li>
+    <li><strong>Write barriers + flush controlado</strong> — integridade em queda de energia: a ordem de gravação (padrão no F2FS) evita estado corrompido; dados críticos usam <code>fsync()</code> + escrita atômica (<code>rename()</code>). O monitor de tensão (GPIO <em>power-good</em>) dispara <em>shutdown</em> limpo e o <em>supercapacitor</em> segura energia para o <code>sync</code> final.</li>
+    <li><strong>logrotate com LZMA + scheduler leve:</strong> <code>logrotate</code> diário com <code>compresscmd xz</code> limita o volume gravado; <code>echo none &gt; /sys/block/mmcblk0/queue/scheduler</code> (sem reordenação custosa).</li>
+  </ul>
+</div>
+<blockquote><strong>Síntese da seção 2:</strong> cgroups/<code>earlyoom</code> blindam a memória, <code>SCHED_FIFO</code>+<code>taskset</code> blindam a CPU da telemetria, e o ring buffer + F2FS + <em>write barriers</em> blindam o armazenamento e os dados. Sob qualquer pressão, <strong>a telemetria nunca cai e os dados nunca corrompem</strong> — o mesmo objetivo de um sistema espacial.</blockquote>
+
+<hr>
+
+<h2>3. Conexão com o ODS 9 e Impacto na Terra</h2>
+<p><strong>ODS 9:</strong> “Construir infraestruturas resilientes, promover a industrialização inclusiva e sustentável e fomentar a inovação.”</p>
+<p>A tese central inverte o olhar habitual: <strong>as otimizações de SO que mantêm um satélite vivo por anos, sem reinício e com pouca energia, são exatamente o que faz uma estação meteorológica funcionar 24/7 numa fazenda sem infraestrutura.</strong> A fronteira espacial vira ferramenta de inclusão produtiva no campo.</p>
+
+<h3>3.1 Da órbita para a roça: a mesma engenharia</h3>
+<table>
+  <thead><tr><th>Otimização de origem espacial</th><th>Aplicação na estação 2F-AGRO</th></tr></thead>
+  <tbody>
+    <tr><td>Autonomia sem reinício físico (sonda/satélite)</td><td><code>earlyoom</code> + cgroups + <code>oom_score_adj</code>: a estação não trava sozinha no poste.</td></tr>
+    <tr><td>Prioridade absoluta de telemetria (controle de missão)</td><td><code>SCHED_FIFO</code> + <code>taskset</code> core 0: o alerta de geada/seca tem prioridade sobre tudo.</td></tr>
+    <tr><td>Eficiência energética extrema (orçamento de watts)</td><td>DVFS + Raspbian Lite + processamento na borda: opera com painel solar de 20 W.</td></tr>
+    <tr><td>Telemetria de baixa banda (downlink escasso)</td><td>LoRaWAN: envia só o resultado processado, poucos bytes, a quilômetros.</td></tr>
+    <tr><td>Proteção de armazenamento e dados</td><td>F2FS + ring buffer + <em>write barriers</em>: a eMMC dura anos e os dados sobrevivem à queda de energia.</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 Impacto e alinhamento com o ODS 9</h3>
+<ul>
+  <li><strong>Infraestrutura resiliente (meta 9.1):</strong> um nó autônomo e confiável onde não há energia nem internet democratiza o acesso a dados agrometeorológicos — tecnologia de ponta no semiárido, não só no agronegócio de grande porte.</li>
+  <li><strong>Industrialização sustentável (meta 9.4):</strong> otimização profunda = <strong>menos energia, menos hardware, menos desperdício</strong>; uma estação que faz mais com poucos watts reduz a pegada de carbono.</li>
+  <li><strong>Inovação (metas 9.5 / 9.b):</strong> o mesmo <em>stack</em> serve a alerta de geada, gestão de irrigação, previsão de janela de plantio/colheita e monitoramento de microclima — P&D de origem espacial resolvendo problemas locais.</li>
+</ul>
+<div class="config">
+  <span class="titulo">Estimativas quantitativas de impacto (ordem de grandeza)</span>
+  <p style="margin-top:0;font-size:0.92rem;color:#555;">Estimativas de ordem de grandeza, baseadas em parâmetros típicos do hardware e de rádio LoRa — para dimensionar o ganho, não como medições exatas:</p>
+  <ul>
+    <li><strong>Consumo médio:</strong> Raspberry Pi 4 <em>tunado</em> (Lite, DVFS, picos curtos) na faixa de <strong>~2 a 4 W médios</strong>, viável com painel de 20 W mesmo em dias nublados.</li>
+    <li><strong>Banda transmitida:</strong> <em>payload</em> LoRa de dezenas de bytes a ~<strong>240 bytes</strong>/mensagem (limite prático LoRaWAN) contra dados brutos da ordem de <strong>MB</strong> — redução de <strong>~3 a 5 ordens de grandeza</strong>.</li>
+    <li><strong>Autonomia:</strong> com solar 20 W + LiFePO4 10 Ah, operação autossustentável, com autonomia de <strong>dias</strong> sem sol e bateria com vida de <strong>anos</strong> (~milhares de ciclos).</li>
+    <li><strong>Alcance:</strong> enlace LoRa de <strong>~2 a 15 km</strong> em campo aberto, dispensando torres densas e cabeamento.</li>
+    <li><strong>Vida útil da eMMC:</strong> ring buffer em <code>tmpfs</code> + escrita em lote + <code>logrotate</code> reduz o volume de escritas em <strong>~1 a 2 ordens de grandeza</strong>, estendendo na mesma ordem a vida do <em>flash</em>.</li>
+  </ul>
+</div>
+
+<h3>3.3 O ciclo virtuoso</h3>
+<p>A tecnologia que mantém um satélite operando sozinho por anos é a mesma que mantém a estação 2F-AGRO viva no semiárido. <strong>Otimização profunda de recursos computacionais é a chave da inovação sustentável — seja na órbita da Terra, na superfície de Marte ou numa fazenda sem energia no interior do Brasil.</strong></p>
+
+<hr>
+
+<h2>4. Conclusão</h2>
+<p>A escolha de <strong>Raspbian Lite + PREEMPT-RT</strong> é tecnicamente coerente com uma estação meteorológica solar autônoma, e três frentes de <em>tuning</em> — <strong>memória</strong> (<code>swappiness</code>, cgroups v2, <code>earlyoom</code>, <code>min_free_kbytes</code>, <code>oom_score_adj</code>), <strong>CPU</strong> (<code>SCHED_FIFO</code> 99, <code>taskset</code> core 0, <code>nice +10</code>, reserva RT, DVFS) e <strong>I/O</strong> (F2FS, ring buffer em <code>tmpfs</code>, <em>write barriers</em>, <code>logrotate</code> LZMA) — resolvem diretamente os riscos do ambiente: esgotamento de memória, perda de prioridade da telemetria e desgaste/corrupção do armazenamento. Importando a engenharia que mantém sistemas espaciais vivos por anos, o 2F-AGRO entrega infraestrutura resiliente e sustentável ao pequeno agricultor, em alinhamento direto com o <strong>ODS 9</strong>.</p>
+
+<hr>
+
+<h3>Glossário rápido</h3>
+<ul>
+  <li><strong>OOM (Out of Memory):</strong> esgotamento de RAM; o kernel mata processos para sobreviver.</li>
+  <li><strong>cgroups v2:</strong> mecanismo do Linux para limitar/isolar CPU, memória e I/O por grupo de processos.</li>
+  <li><strong>swappiness:</strong> parâmetro (0–100) do quão agressivamente o kernel usa <em>swap</em>.</li>
+  <li><strong>earlyoom:</strong> <em>daemon</em> que mata o processo menos importante antes de o sistema travar por falta de RAM.</li>
+  <li><strong>min_free_kbytes:</strong> quantidade de RAM que o kernel mantém sempre livre como reserva.</li>
+  <li><strong>SCHED_FIFO:</strong> política de escalonamento de tempo real; preempta processos comuns.</li>
+  <li><strong>taskset / isolcpus:</strong> fixam um processo a um núcleo / isolam um núcleo do escalonador.</li>
+  <li><strong>DVFS:</strong> ajuste dinâmico de frequência/tensão da CPU para poupar energia.</li>
+  <li><strong>F2FS:</strong> sistema de arquivos otimizado para memória <em>flash</em> (NAND/eMMC).</li>
+  <li><strong>tmpfs:</strong> sistema de arquivos em RAM (volátil), usado como buffer para poupar a <em>flash</em>.</li>
+  <li><strong>write barrier:</strong> garantia de ordem de gravação, preservando a integridade em queda de energia.</li>
+  <li><strong>PREEMPT-RT:</strong> <em>patch</em> do kernel Linux que reduz latências e o torna mais determinístico.</li>
+  <li><strong>LoRaWAN:</strong> rádio de longo alcance e baixíssimo consumo para <em>payloads</em> pequenos.</li>
+</ul>
+
+</body>
+</html>
